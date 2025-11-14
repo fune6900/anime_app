@@ -34,7 +34,7 @@ function App() {
 
   const fetchAnimeList = async () => {
     const response = await fetch(
-      "https://api.annict.com/v1/works?",
+      "https://api.annict.com/v1/works?filter_title=お兄ちゃんはおしまい",
       {
         headers: {
           Authorization: `Bearer ${import.meta.env.VITE_ANNICT_API_KEY}`,
