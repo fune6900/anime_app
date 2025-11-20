@@ -6,6 +6,7 @@ type Anime = {
   original_name: string;
   poster_path: string;
   overview: string;
+  genre_ids: number[];
 };
 
 type AnimeJson = {
@@ -53,6 +54,7 @@ function App() {
       original_name: anime.original_name,
       poster_path: anime.poster_path,
       overview: anime.overview,
+      genre_ids: anime.genre_ids,
     })
     ));
     console.log(data.results);  
@@ -66,7 +68,10 @@ function App() {
     <div>
       <input type="text" onChange={(e) => setKeyword(e.target.value)} placeholder="タイトルで検索" />
       <p>検索キーワード: {keyword}</p>
-      {animeList.filter((anime) => anime.original_name.includes(keyword)).map((anime) => (
+      {animeList
+        .filter((anime) => anime.original_name.includes(keyword))
+        .filter((anime) => anime.genre_ids.includes(16))
+        .map((anime) => (
         <div key={anime.id}>
           <h2>{anime.original_name}</h2>
           <img src={`https://media.themoviedb.org/t/p/w600_and_h900_bestv2/${anime.poster_path}`} alt={anime.original_name} />
