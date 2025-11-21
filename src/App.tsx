@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import './App.css'
+import { Link } from 'react-router';
 
 type Anime = {
-  id: number;
+  id: string;
   original_name: string;
   poster_path: string;
   overview: string;
@@ -13,7 +14,7 @@ type AnimeJson = {
   adult: boolean;
   backdrop_path: string;
   genre_ids: number[];
-  id: number;
+  id: string;
   origin_country: string[];
   original_language: string;
   original_name: string;
@@ -72,11 +73,11 @@ function App() {
         .filter((anime) => anime.original_name.includes(keyword))
         .filter((anime) => anime.genre_ids.includes(16))
         .map((anime) => (
-        <div key={anime.id}>
+        <Link to={`/animes/${anime.id}`} key={anime.id}>
           <h2>{anime.original_name}</h2>
           <img src={`https://media.themoviedb.org/t/p/w600_and_h900_bestv2/${anime.poster_path}`} alt={anime.original_name} />
           <p>{anime.overview}</p>
-        </div>
+        </Link>
       ))}
     </div>
   )

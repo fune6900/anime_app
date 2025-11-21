@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import AnimeDetail from './AnimeDetail.tsx'
+import Header from './Header.tsx'
 import { createBrowserRouter } from 'react-router';
 import { RouterProvider } from 'react-router'
 
@@ -13,6 +14,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Header>
+      <RouterProvider router={router} />
+    </Header>
   </StrictMode>
 )
