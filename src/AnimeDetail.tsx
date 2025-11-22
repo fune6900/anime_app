@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
+import './AnimeDetail.css'
+import { ArrowLeft, Clock, Star } from "lucide-react";
 
 type AnimeDetailJson = {
   adult: boolean;
@@ -41,7 +43,7 @@ type AnimeDetailJson = {
   number_of_episodes: number;
   number_of_seasons: number;
   origin_country: string[];
-  originnal_language: string;
+  original_language: string;
   original_name: string;
   overview: string;
   popularity: number;
@@ -94,7 +96,7 @@ function AnimeDetail() {
   const { id } = useParams();
   const [anime, setAnime] = useState<Anime | null>(null);
 
-  const featchAnimeDetail = async () => {
+  const fetchAnimeDetail = async () => {
     const response = await fetch(
       `https://api.themoviedb.org/3/tv/${id}?language=ja`,
       {
@@ -104,13 +106,13 @@ function AnimeDetail() {
       }
     );
 
-    const data = await response.json();
+    const data: AnimeDetailJson = await response.json();
     setAnime({
       id: data.id,
       original_name: data.original_name,
       poster_path: data.poster_path,
       overview: data.overview,
-      year: data.first_air_date.split("-")[0],
+      year: Number(data.first_air_date.split("-")[0]),
       rating: data.vote_average,
       runtime: data.episode_run_time[0],
       score: data.popularity,
@@ -120,24 +122,72 @@ function AnimeDetail() {
   };
 
   useEffect(() => {
-    featchAnimeDetail();
+    fetchAnimeDetail();
   }, []);
 
   return (
-  <div>
-    {anime && (
-    <div> 
-      <h2>{anime.original_name}</h2>
-      <img src={`https://image.tmdb.org/t/p/w500${anime.poster_path}`} alt={anime.original_name} />
-      <p>{anime.overview}</p>
-      <p>Year: {anime.year}</p>
-      <p>Rating: {anime.rating}</p>
-      <p>Runtime: {anime.runtime} minutes</p>
-      <p>Score: {anime.score}</p>
-      <p>Genres: {anime.genres}</p>
+    <div className="movie-detail-root">
+      {anime && (
+        <>
+          <div
+            className="movie-detail-backdrop"
+            style={{
+              backgroundImage: `url(${
+                "https://image.tmdb.org/t/p/w500" + anime.poster_path
+              })`,
+            }}
+          />
+          <div className="movie-detail-backdrop-gradient" />
+          <div className="movie-detail-container">
+            <Link to="/" className="movie-detail-backlink">
+              <ArrowLeft className="movie-detail-backlink-icon" size={20} />
+              Back to home
+            </Link>
+            <div className="movie-detail-grid">
+              <div className="movie-detail-poster-wrap">
+                <img
+                  src={"https://image.tmdb.org/t/p/w500" + anime.poster_path}
+                  alt={anime.original_name}
+                  className="movie-detail-poster-img"
+                />
+              </div>
+              <div className="movie-detail-details">
+                <h1 className="movie-detail-title">{anime.original_name}</h1>
+                <div className="movie-detail-badges">
+                  <span className="badge-outline">{anime.year}</span>
+                  <span className="badge-outline">PG-13</span>
+                  <span className="badge-outline">
+                    <Clock className="badge-icon-svg" size={14} />
+                    {anime.runtime}分
+                  </span>
+                  <span className="badge-outline">
+                    <Star className="badge-icon-svg badge-star" size={14} />
+                    {(anime.rating / 10).toFixed(1)}
+                  </span>
+                </div>
+                <p className="movie-detail-overview">{anime.overview}</p>
+                <div className="movie-detail-genres">
+                  {anime.genres.map((g) => (
+                    <span key={g} className="badge-genre">
+                      {g}
+                    </span>
+                  ))}
+                </div>
+                <div className="movie-detail-actions">
+                  <button className="movie-detail-btn movie-detail-btn-primary">
+                    ▶ Watch Now
+                  </button>
+                  <button className="movie-detail-btn">
+                    ＋ Add to My List
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
-    )}
-  </div>
-)};
+  );
+}
 
 export default AnimeDetail;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css'
-import { Link } from 'react-router';
+import AnimeCard from './AnimeCard';
 
 type Anime = {
   id: string;
@@ -28,7 +28,6 @@ type AnimeJson = {
 };
 
 function App() {
-  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   const [keyword, setKeyword] = useState("");
   const [animeList, setAnimeList] = useState<Anime[]>([]);
 
@@ -65,22 +64,61 @@ function App() {
     fetchAnimeList();
   }, [keyword]);
 
+  const heroTitle = "ぼっち・ざ・ろっく！";
+  const heroYear = 2016;
+  const heroOverview = '"ぼっちちゃん"こと後藤ひとりは会話の頭に必ず「あっ」って付けてしまう極度の人見知りで陰キャな少女。そんな自分でも輝けそうなバンド活動に憧れギターを始めるも友達がいないため、一人で毎日6時間ギターを弾く中学生時代を過ごすことに。上手くなったギターの演奏動画を"ギターヒーロー"としてネットに投稿したり文化祭ライブで活躍したりする妄想なんかをしていると、気づいたときにはバンドメンバーを見つけるどころか友達が一人も出来ないまま高校生になっていた……！ひきこもり一歩手前の彼女だったがある日"結束バンド"でドラムをやっている伊地知虹夏に声をかけられたことで、そんな日常がほんの少しずつ変わっていく――';
+  const heroImage = 'https://media.themoviedb.org/t/p/w600_and_h900_face/se9xLGHlSqQwVgEzLw326CJjaRm.jpg';
+
   return (
     <div>
-      <input type="text" onChange={(e) => setKeyword(e.target.value)} placeholder="タイトルで検索" />
-      <p>検索キーワード: {keyword}</p>
-      {animeList
-        .filter((anime) => anime.original_name.includes(keyword))
-        .filter((anime) => anime.genre_ids.includes(16))
-        .map((anime) => (
-        <Link to={`/animes/${anime.id}`} key={anime.id}>
-          <h2>{anime.original_name}</h2>
-          <img src={`https://media.themoviedb.org/t/p/w600_and_h900_bestv2/${anime.poster_path}`} alt={anime.original_name} />
-          <p>{anime.overview}</p>
-        </Link>
-      ))}
+      <section className="hero-section">
+        {heroImage && (
+          <>
+            <img className="hero-section-bg" src={heroImage} alt={heroTitle} />
+            <div className="hero-section-gradient" />
+          </>
+        )}
+        <div className="hero-section-content">
+          <h1 className="hero-section-title">{heroTitle}</h1>
+          <div className="hero-section-badges">
+            <span className="hero-section-badge">{heroYear}</span>
+          </div>
+          {heroOverview && (
+            <p className="hero-section-overview">{heroOverview}</p>
+          )}
+          <div className="hero-section-actions">
+            <button className="hero-section-btn hero-section-btn-primary">
+              <span>▶ Play</span>
+            </button>
+            <button className="hero-section-btn hero-section-btn-secondary">
+              <span>More Info</span>
+            </button>
+          </div>
+        </div>
+      </section>
+      <section className="movie-row-section">
+        <h2 className="movie-row-title">
+          {keyword ? `「${keyword}」の検索結果` : "人気作品"}
+        </h2>
+        <div className="movie-row-scroll">
+          {animeList
+            .filter((anime) => anime.original_name.includes(keyword))
+            .filter((anime) => anime.genre_ids.includes(16))
+            .map((anime) => (
+            <AnimeCard anime={anime} key={anime.id} />
+          ))}
+        </div>
+      </section>
+      <div className="app-search-wrap">
+        <input
+          type="text"
+          className="app-search"
+          placeholder="アニメタイトルで検索..."
+          onChange={(e) => setKeyword(e.target.value)}
+        />
+      </div>
     </div>
-  )
+  );
 }
 
 export default App
